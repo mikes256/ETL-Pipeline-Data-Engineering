@@ -1,2 +1,6 @@
 \venv
 documentation_artefacts.txt
+config.toml
+config.json
+config.ini
+config.yml
