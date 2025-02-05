@@ -45,8 +45,7 @@ def run_request_extract(response):
     return df
 
 def dataFrame_head(df):
-    #df.head()
-    #df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces from column names
+    df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces from column names
     df.head()
     return df
 
