@@ -59,3 +59,9 @@ def main():
     
 if __name__ == "__main__":
     main()
+
+
+"""
+1. Create updated: pip freeze > requirements.txt
+    
+"""
