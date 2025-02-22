@@ -1,6 +1,5 @@
-import requests
-import pandas as pd
-import yaml
+import requests, yaml, pandas as pd
+from pathlib import Path
 from io import StringIO  # To handle CSV data in memory
 
 def get_config():
@@ -33,7 +32,7 @@ def run_request_extract(response):
             df = pd.read_csv(csv_data)
             
             # Display the first few rows of the DataFrame
-            print(df.head())
+            #print(df.head())
         
         except ValueError as e:
             # Handle error if unable to read the CSV
@@ -46,22 +45,38 @@ def run_request_extract(response):
 
 def dataFrame_head(df):
     df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces from column names
-    df.head()
     return df
+
+def remove_delisting_col(df):
+    df = df.drop('delistingDate', axis=1, errors='ignore')  # Avoid errors if column isn't found
+    
+    return df
+
+def ipoDate_to_date(df):
+    df['ipoDate'] = pd.to_datetime(df['ipoDate'], errors='coerce')
+    
+    return df
+
+
+def csv_output(df):
+    filepath = Path()
+    filename = 'transformed_cleaned.csv'
+
+    output_dir = df.to_csv(filepath / filename)
+
+    return df, output_dir
+
 
 def main():
     first_auth = auntenticate(API_KEY)
     requests_extract = run_request_extract(first_auth)
     see_df = dataFrame_head(requests_extract)
-    
+    remove_col = remove_delisting_col(see_df)
+    to_date = ipoDate_to_date(remove_col)
+    csv_excel = csv_output(to_date)
+        
     #print df
-    print(see_df)
+    print(csv_excel)
     
 if __name__ == "__main__":
     main()
-
-
-"""
-1. Create updated: pip freeze > requirements.txt
-    
-"""
