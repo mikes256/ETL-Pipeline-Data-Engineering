@@ -3,7 +3,7 @@ from pathlib import Path
 from io import StringIO  # To handle CSV data in memory
 
 def get_config():
-    # Load the YAML file
+    """ Load the YAML config file """
     with open('config.yml', 'r') as file:
         config = yaml.safe_load(file)
     return config
@@ -13,6 +13,8 @@ config = get_config()
 API_KEY = config['api']['api_key']
 
 def auntenticate(API_KEY):
+    #ADD A TRY BLOCK. 
+
     # Request for S&P 500 list (this endpoint gives you the entire listing)
     url = f"https://www.alphavantage.co/query?function=LISTING_STATUS&apikey={API_KEY}"
 

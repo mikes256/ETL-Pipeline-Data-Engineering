@@ -21,7 +21,6 @@ Schedule the ETL job using Apache Airflow or a simple cron job.
 ## 5. Optional - Query & Analyze in Snowflake
 Write SQL queries to analyze trends (e.g., moving averages, daily returns).
 
-
 ## Tech Stack Used
 ✅ Python (requests, pandas, yfinance)  
 ✅ Snowflake (storage & querying)   
@@ -35,3 +34,15 @@ Teaches real-world ETL concepts.
 Helps you practice data modeling (normalizing stock data).
 Uses Python for both data transformation & loading (AE + DE skills).
 Gets you comfortable with Snowflake + Python connectors before dbt.
+
+
+## Purpose
+
+
+## Prerequisite
+
+## Automation
+
+## Config file
+
+## 
