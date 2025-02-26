@@ -45,21 +45,21 @@ def run_request_extract(response):
         print("Response content:", response.text)  # Inspect the raw response content
     return df
 
-def dataFrame_head(df):
+def transformation(df):
     df.columns = df.columns.str.strip()  # Strip any leading/trailing spaces from column names
-    return df
-
-def remove_delisting_col(df):
     df = df.drop('delistingDate', axis=1, errors='ignore')  # Avoid errors if column isn't found
+    df['ipoDate'] = pd.to_datetime(df['ipoDate'], errors='coerce') # Turns ipoDate from a str into a datetime
+    return df
+"""
+def remove_delisting_col(df):
     
     return df
 
 def ipoDate_to_date(df):
-    df['ipoDate'] = pd.to_datetime(df['ipoDate'], errors='coerce')
     
     return df
 
-
+"""
 def csv_output(df):
     filepath = Path()
     filename = 'transformed_cleaned.csv'
@@ -72,10 +72,13 @@ def csv_output(df):
 def main():
     first_auth = auntenticate(API_KEY)
     requests_extract = run_request_extract(first_auth)
-    see_df = dataFrame_head(requests_extract)
-    remove_col = remove_delisting_col(see_df)
-    to_date = ipoDate_to_date(remove_col)
-    csv_excel = csv_output(to_date)
+    #see_df = dataFrame_head(requests_extract)
+    #remove_col = remove_delisting_col(see_df)
+    #to_date = ipoDate_to_date(remove_col)
+    t_etl = transformation(requests_extract)
+    csv_excel = csv_output(t_etl)
+
+    #csv_excel = csv_output(to_date)
         
     #print df
     print(csv_excel)

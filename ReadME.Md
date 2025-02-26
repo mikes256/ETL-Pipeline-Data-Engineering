@@ -35,14 +35,29 @@ Helps you practice data modeling (normalizing stock data).
 Uses Python for both data transformation & loading (AE + DE skills).
 Gets you comfortable with Snowflake + Python connectors before dbt.
 
+!!Real ReadMe.md below!!
+# Project: Building an ETL Pipeline for Stock Market Data (Yahoo Finance → Snowflake)
 
 ## Purpose
-
+ETL image create 
 
 ## Prerequisite
-
-## Automation
+What is required to run the script
 
 ## Config file
 
-## 
+## Automation
+
+## Virtual Environment
+
+### venv/myenv
+
+## Functionality
+
+## Library Dependecy Update
+
+## Who can run the code
+
+### Features
+
+## Security Reminder
