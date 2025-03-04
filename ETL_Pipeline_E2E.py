@@ -1,5 +1,6 @@
 import requests, yaml, pandas as pd
 from pathlib import Path
+import snowflake.connector
 from io import StringIO  # To handle CSV data in memory
 
 def get_config():
@@ -69,12 +70,43 @@ def csv_output(df):
     return df, output_dir
 
 
+def load_snowflake():
+    # Snowflake credentials
+    conn = snowflake.connector.connect(
+        user="YOUR_USERNAME",
+        password="YOUR_PASSWORD",
+        account="YOUR_ACCOUNT",  # E.g., 'xyz123.snowflakecomputing.com'
+        warehouse="YOUR_WAREHOUSE",
+        database="YOUR_DATABASE",
+        schema="YOUR_SCHEMA"
+    )
+
+    print("Connected to Snowflake!")
+
+    """
+    create_table_query = 
+    # three " here
+    CREATE TABLE IF NOT EXISTS your_table_name (
+        symbol STRING,
+        name STRING,
+        exchange STRING,
+        assetType STRING,
+        ipoDate DATE,
+        delistingDate DATE,
+        status STRING
+    );
+    # three " here
+    cur = conn.cursor()
+    cur.execute(create_table_query)
+    conn.commit()
+    print("Table checked/created.")
+
+    """
+    pass
+
 def main():
     first_auth = auntenticate(API_KEY)
     requests_extract = run_request_extract(first_auth)
-    #see_df = dataFrame_head(requests_extract)
-    #remove_col = remove_delisting_col(see_df)
-    #to_date = ipoDate_to_date(remove_col)
     t_etl = transformation(requests_extract)
     csv_excel = csv_output(t_etl)
 
