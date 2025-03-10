@@ -1,6 +1,5 @@
 import requests, yaml, pandas as pd
 from pathlib import Path
-import snowflake.connector
 from io import StringIO  # To handle CSV data in memory
 
 def get_config():
