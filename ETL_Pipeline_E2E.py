@@ -69,8 +69,8 @@ def csv_output(df):
     return df, output_dir
 
 
-def load_snowflake():
-    # Snowflake credentials
+def load_supabase():
+    # Supabase credentials
     conn = snowflake.connector.connect(
         user="YOUR_USERNAME",
         password="YOUR_PASSWORD",
@@ -80,7 +80,7 @@ def load_snowflake():
         schema="YOUR_SCHEMA"
     )
 
-    print("Connected to Snowflake!")
+    print("Connected to Supabase!")
 
     """
     create_table_query = 
