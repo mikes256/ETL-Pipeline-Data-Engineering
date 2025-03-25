@@ -1,6 +1,15 @@
-import requests, yaml, pandas as pd
+import requests, yaml, logging, pandas as pd
+from supabase import create_client, Client
 from pathlib import Path
 from io import StringIO  # To handle CSV data in memory
+
+logger = logging.getLogger()
+FORMAT = '%(asctime)s %(clientip)-15s %(user)-8s %(message)s'
+logging.basicConfig(format=FORMAT, level=logging.INFO)
+logger.setLevel(logging.INFO)
+
+
+
 
 def get_config():
     """ Load the YAML config file """
@@ -9,14 +18,12 @@ def get_config():
     return config
 config = get_config()
 
-# Global constants
-API_KEY = config['api']['api_key']
 
 def auntenticate(API_KEY):
     #ADD A TRY BLOCK. 
 
     # Request for S&P 500 list (this endpoint gives you the entire listing)
-    url = f"https://www.alphavantage.co/query?function=LISTING_STATUS&apikey={API_KEY}"
+    url = f"https://www.alphavantage.co/query?function=LISTING_STATUS&apikey={config['api']['api_key']}"
 
     # Make the API request
     response = requests.get(url)
@@ -38,8 +45,11 @@ def run_request_extract(response):
         
         except ValueError as e:
             # Handle error if unable to read the CSV
-            print("Error reading CSV:", e)
-            print("Response text:", response.text)  # Inspect the actual response content
+            logging.error(f"Error reading CSV:", {e})
+            raise
+        except Exception as m:
+            logging.error("Response text:", response.text,f"\nErr: {m}")  # Inspect the actual response content
+            raise
     else:
         print(f"Error: Received status code {response.status_code}")
         print("Response content:", response.text)  # Inspect the raw response content
@@ -50,16 +60,7 @@ def transformation(df):
     df = df.drop('delistingDate', axis=1, errors='ignore')  # Avoid errors if column isn't found
     df['ipoDate'] = pd.to_datetime(df['ipoDate'], errors='coerce') # Turns ipoDate from a str into a datetime
     return df
-"""
-def remove_delisting_col(df):
-    
-    return df
 
-def ipoDate_to_date(df):
-    
-    return df
-
-"""
 def csv_output(df):
     filepath = Path()
     filename = 'transformed_cleaned.csv'
@@ -71,15 +72,9 @@ def csv_output(df):
 
 def load_supabase():
     # Supabase credentials
-    conn = snowflake.connector.connect(
-        user="YOUR_USERNAME",
-        password="YOUR_PASSWORD",
-        account="YOUR_ACCOUNT",  # E.g., 'xyz123.snowflakecomputing.com'
-        warehouse="YOUR_WAREHOUSE",
-        database="YOUR_DATABASE",
-        schema="YOUR_SCHEMA"
-    )
-
+    url = config['supabase']['url']
+    key = config['supabase']['anon_public']
+    supabase: Client = create_client(url, key)
     print("Connected to Supabase!")
 
     """
@@ -101,7 +96,8 @@ def load_supabase():
     print("Table checked/created.")
 
     """
-    pass
+
+pass
 
 def main():
     first_auth = auntenticate(API_KEY)
