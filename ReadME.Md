@@ -37,7 +37,7 @@ Gets you comfortable with Snowflake + Python connectors before dbt.
 
 !!Real ReadMe.md below!!
 # Project: Building an ETL Pipeline for Stock Market Data (Yahoo Finance → Snowflake)
-
+pip freeze > requirements.txt
 ## Purpose
 ETL image create 
 
