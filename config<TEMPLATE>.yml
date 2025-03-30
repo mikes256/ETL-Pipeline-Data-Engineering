@@ -1,0 +1,8 @@
+api: 
+  api_key: <alpha_vantage_api_token>
+
+supabase:
+  api_name: <supabase_api_name>
+  api: <supabase_api>
+  url: <table/project_url>
+  anon_public: <table/project_api>
