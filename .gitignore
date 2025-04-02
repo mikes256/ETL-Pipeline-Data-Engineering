@@ -1,5 +1,8 @@
 \venv
-documentation_artefacts.txt
-config.json
 config.yml
-transformed_cleaned.csv
+/cleaned_output_csv
+python-conda.png
+pypy.avif
+logo-light.png
+image001.png
+image.png

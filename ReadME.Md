@@ -1,63 +1,137 @@
-# Project: Building an ETL Pipeline for Stock Market Data (Yahoo Finance → Snowflake)
-
-## Goal: Extract stock market data, transform it in Python, and load it into Snowflake for analytics.
-
-## Project Outline
-## 1. Extract Data (Yahoo Finance API)
-Use yfinance to fetch historical stock data (e.g., Apple, Tesla).
-Save raw data in a structured format (CSV or DataFrame).
-## 2. Transform Data (Python & Pandas)
-Clean column names, handle missing data, and standardize date formats.
-Normalize data into different tables:
-stocks (ticker, company name)
-date_dimension (date, year, quarter, month)
-stock_prices (ticker, date, open, close, volume)
-## 3. Load Data (Snowflake Python Connector)
-Connect to Snowflake using Python.
-Create necessary tables in Snowflake (if they don’t exist).
-Load transformed data into Snowflake.
-## 4. Automate the Pipeline
-Schedule the ETL job using Apache Airflow or a simple cron job.
-## 5. Optional - Query & Analyze in Snowflake
-Write SQL queries to analyze trends (e.g., moving averages, daily returns).
-
-## Tech Stack Used
-✅ Python (requests, pandas, yfinance)  
-✅ Snowflake (storage & querying)   
-✅ Snowflake Python Connector (to load data)    
-✅ Airflow (Optional) (for orchestration)
-
-
-### Why This Project?
-
-Teaches real-world ETL concepts.
-Helps you practice data modeling (normalizing stock data).
-Uses Python for both data transformation & loading (AE + DE skills).
-Gets you comfortable with Snowflake + Python connectors before dbt.
-
-!!Real ReadMe.md below!!
-# Project: Building an ETL Pipeline for Stock Market Data (Yahoo Finance → Snowflake)
-pip freeze > requirements.txt
+# Project: Building an ETL Pipeline for S&P 500 Data (Alpha Vantage API → Python ETL → Supabase db)
 ## Purpose
-ETL image create 
+
+#### Extract
+![alt text](image001.png)
+
+
+#### Transform
+![alt text](pypy.avif)
+
+#### Load
+![alt text](logo-light.png)
+
+
+    
+This ETL project fetches S&P 500 data from Alpha Vantage using an API request, transforms the data in Python using Pandas and loads the data into the cloud database Supabase for further querying and analysis.   
+
+There is a .csv hardcopy which is outputted into the local parent direcrory to keep a hardcopy for worst case scenarios.    
+
+This script automates the extraction, transformation and loading of Alpha Vantage's S&P 500 list.
+
+The purpose of this repository is to safely store the code and give future programmers an opportunity to fork this repository and learn for themselves.
 
 ## Prerequisite
-What is required to run the script
+To run this script successfully you must have the following:
+1. [Alpha Vantage API token](https://www.alphavantage.co/documentation/)
+2. [Supabase API token & URL](https://supabase.com/docs/guides/api)
+
 
 ## Config file
+Modify the content of your config file accordingly. I have listed the relevant values required to fill in to run the script.    
+
+Below is for further guidance on how to fill out your config file. Anything wrapped in "<input:...>" required data to be parsed in:
+```yml
+api api_key: <input: API TOKEN>
+supabase api_name: <input: YOUR SUPABASE API NAME>
+supabase api: <input: YOUR SUPABASE API>
+supabase url: <input: YOUR SUPABASE PROJECT/TABLE URL>
+supabase anon_public: <input: YOUR SUPABASE PROJECT/TABLE API>
+```
+
 
 ## Automation
+\
+
+
 
 ## Virtual Environment
+Please use a virtual environment when running this script. This helps contain yoour code in a safer, organised, optimised environment with better security controls. 
 
+
+Your virtual environment should look like this, if set up correctly.
+```
+TERMINAL: >venv/bin/Scripts
+(venv) TERMINAL: >
+```
 ### venv/myenv
+![alt text](python-conda.png)   
+To run a conda virtual environment [click here](https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html).  
+To run a python virtual environment [click here](https://docs.python.org/3/library/venv.html).
+
 
 ## Functionality
+Alpha Vantage have a list of different api endpoints you can connect to. These can be instantiated by coupling your Alpha Vantage name and API token.   
+The output is a cleaned transformed ```.csv``` you can use for further analytics and have stored for safe keeping on your local pc/environment.
+
+The code improves reporting and gets close to real time reporting as possible, if there are any updates or new rows the code will be refreshed. By eliminating the need to extract a sizeable excel file and manually transform the S&P 500 data to fir your reporting critera, then ingest the data into your BI tool or database of choice.     
+ This script replaces all of these mundane steps at either the click of one button or you can programme the script with ```cron```, ```task scheduler``` or ```apache airflow``` to run on a particular cadence. 
+
 
 ## Library Dependecy Update
+To install all necessary packages listed in the [requirements.txt](https://github.com/mikes256/ETL-Pipeline-Data-Engineering/blob/main/requirements.txt) follow the below terminal/command line prompts.
+```ruby
+(venv) TERMINAL: >pip install -r requirements.txt
+(venv) TERMINAL: >pip install pip-tools
+(venv) TERMINAL: >pip sync     #helps with package dependencies
+```
+### Conflicting packages update 
+Step by step instructions for managing package dependencies and ensuring there are no conflicting libraries, ultimately futureproofing this ETL project.    
+Follow [this link](https://github.com/mikes256/ETL-Pipeline-Data-Engineering/blob/main/Updating_Libraries.md) for detailed instructions.
 
 ## Who can run the code
+Anyone interested in running and understanding the code behind this ETL project or thinks they can improve the code.    
+Additionally, this code is tailored for data analysts, junior data engineers, analytics engineers, data scientists and programmers who are intersted in ETL projects. 
+
+You are strongly advised to run the code in a virtual environment and install all packages in the [requirements.txt](https://github.com/mikes256/ETL-Pipeline-Data-Engineering/blob/main/requirements.txt) in a venv/myenv for dependencies and optimal processing speed by only installing the necessary packages.
+
+
 
 ### Features
+- Automates extraction, transformation, and loading of S&P 500 Alpha Vantage endpoint.
+- Provides near-real-time batch reporting into a cloud database (Supabase)
+- Outputs cleaned data for further analysis
+- Simplifies the reporting process with a single command
+
+## Data Quality
+1. Column Name Standardisation
+- Trimmed leading and trailing spaces from column names.
+- Converted all column names to lowercase to maintain consistency and avoid schema conflicts.
+
+2. Handling Missing & Invalid Data
+- Used ```errors='coerce'``` while converting ipoDate to datetime, ensuring invalid dates were handled gracefully.
+- Dropped the ['delistingDate'] column if it existed, preventing unnecessary processing of outdated records and this column was filled with NaN.
+
+3. Ensuring Data Type Consistency
+ - Converted ['ipoDate'] to datetime to allow proper date filtering and analysis.
+- Converted the entire dataset to string format before inserting into Supabase to prevent type mismatches.
+
+4. Tracking Data Refreshes
+- Added a LastRun_Timestamp column to track when the data was last updated.
+- Ensured every ETL run adds a new timestamp to monitor data freshness.
+
+5. Uniqueness & Constraint Handling
+- Added a primary key (id) to uniquely identify records.
+- Created a unique constraint on (symbol, exchange) to prevent duplicate stock entries.
+- Used ```on_conflict=['symbol', 'exchange']``` in Supabase to update records when needed instead of duplicating data.
+
+6. Error Handling & Logging
+- Implemented try-except blocks in all major functions to catch errors gracefully.
+- Used logging (logger.info, etc.) to track script execution and debug issues.
+7. Efficient Data Loading
+- Converted the dataframe to a list of dictionaries for optimized batch inserts into Supabase.
+ - Implemented batch inserts (2500 rows per batch) to improve performance and avoid API rate limits.
+
+
+
 
 ## Security Reminder
+- Never share your ```config``` file publicly or commit it to ```git```
+- Use ```.gitignore``` to exclude ```config``` from being staged and tracked by ```git```
+- Keep your API token encrypted and safely kept, do not share your API token with anyone.
+
+
+## Tech Stack Used
+✅ Python (requests, pandas, yaml)  
+✅ Supabase (storage & querying)   
+✅ Apache Airflow (Optional) (for orchestration)
