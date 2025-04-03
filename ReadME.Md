@@ -51,7 +51,7 @@ Please use a virtual environment when running this script. This helps contain yo
 
 Your virtual environment should look like this, if set up correctly.
 ```
-TERMINAL: >venv/bin/Scripts
+TERMINAL: >source venv/bin/activate
 (venv) TERMINAL: >
 ```
 ### venv/myenv
