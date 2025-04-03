@@ -16,7 +16,7 @@ This ETL project automates the extraction, transformation, and loading (ETL) of 
 - **_E_**: The data is fetched via an API request from Alpha Vantage.
 - **_T_**: It is transformed in Python using Pandas to clean, structure, and enhance data quality.
 - **_L_**: The final dataset is stored in Supabase for analytics and visualization.
-- A .csv backup is saved in a local subdirectory for redundancy and disaster recovery.
+- .csv backup is saved in a local subdirectory for redundancy and disaster recovery.
 
 This repository provides a reproducible and scalable ETL workflow, allowing future developers to fork, modify, and extend the project for their own use cases.
 
