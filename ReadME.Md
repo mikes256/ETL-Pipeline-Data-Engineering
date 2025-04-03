@@ -11,15 +11,15 @@
 #### Load
 ![alt text](logo-light.png)
 
+This ETL project automates the extraction, transformation, and loading (ETL) of S&P 500 data from Alpha Vantage into the Supabase cloud database for further querying and analysis.
 
-    
-This ETL project fetches S&P 500 data from Alpha Vantage using an API request, transforms the data in Python using Pandas and loads the data into the cloud database Supabase for further querying and analysis.   
+- **_E_**: The data is fetched via an API request from Alpha Vantage.
+- **_T_**: It is transformed in Python using Pandas to clean, structure, and enhance data quality.
+- **_L_**: The final dataset is stored in Supabase for analytics and visualization.
+- A .csv backup is saved in a local subdirectory for redundancy and disaster recovery.
 
-There is a .csv hardcopy which is outputted into the local parent direcrory to keep a hardcopy for worst case scenarios.    
+This repository provides a reproducible and scalable ETL workflow, allowing future developers to fork, modify, and extend the project for their own use cases.
 
-This script automates the extraction, transformation and loading of Alpha Vantage's S&P 500 list.
-
-The purpose of this repository is to safely store the code and give future programmers an opportunity to fork this repository and learn for themselves.
 
 ## Prerequisite
 To run this script successfully you must have the following:
@@ -32,21 +32,27 @@ Modify the content of your config file accordingly. I have listed the relevant v
 
 Below is for further guidance on how to fill out your config file. Anything wrapped in "<input:...>" required data to be parsed in:
 ```yml
-api api_key: <input: API TOKEN>
-supabase api_name: <input: YOUR SUPABASE API NAME>
-supabase api: <input: YOUR SUPABASE API>
-supabase url: <input: YOUR SUPABASE PROJECT/TABLE URL>
-supabase anon_public: <input: YOUR SUPABASE PROJECT/TABLE API>
+api:
+    api_key: <input: YOUR ALPHA VANTAGE API TOKEN>
+
+supabase:
+    api_name: <input: YOUR SUPABASE API NAME>
+    api: <input: YOUR SUPABASE API>
+    url: <input: YOUR SUPABASE PROJECT URL>
+    anon_public: <input: YOUR SUPABASE PROJECT API>
 ```
 
 
-## Automation
-\
-
+## End to End Automation
+While this project does not currently use full end to end automation, the ETL script can still be automated using:
+- Apache Airflow
+- Cron Jobs
+- Task Scheduler
+- Cloud-based scheduling tools
 
 
 ## Virtual Environment
-Please use a virtual environment when running this script. This helps contain yoour code in a safer, organised, optimised environment with better security controls. 
+Please use a virtual environment when running this script. This helps contain your code in a safer, organised, optimised environment with better security controls and reduces conflicts with other projects.
 
 
 Your virtual environment should look like this, if set up correctly.
@@ -61,11 +67,11 @@ To run a python virtual environment [click here](https://docs.python.org/3/libra
 
 
 ## Functionality
-Alpha Vantage have a list of different api endpoints you can connect to. These can be instantiated by coupling your Alpha Vantage name and API token.   
+Alpha Vantage have a list of different api endpoints you can connect to. These can be instantiated by coupling your Alpha Vantage username and API token.   
 The output is a cleaned transformed ```.csv``` you can use for further analytics and have stored for safe keeping on your local pc/environment.
 
-The code improves reporting and gets close to real time reporting as possible, if there are any updates or new rows the code will be refreshed. By eliminating the need to extract a sizeable excel file and manually transform the S&P 500 data to fir your reporting critera, then ingest the data into your BI tool or database of choice.     
- This script replaces all of these mundane steps at either the click of one button or you can programme the script with ```cron```, ```task scheduler``` or ```apache airflow``` to run on a particular cadence. 
+The code improves reporting and gets close to real time reporting as possible, if there are any updates or new rows, the code will be refreshed. By eliminating the need to extract a sizeable excel file and manually transform the S&P 500 data to fit your reporting critera, then ingest the data into your BI tool or database of choice.     
+This script replaces all of these mundane steps at either the click of one button or you can programme the script with ```cron```, ```task scheduler``` or ```apache airflow``` to run on a particular cadence. 
 
 
 ## Library Dependecy Update
@@ -88,41 +94,40 @@ You are strongly advised to run the code in a virtual environment and install al
 
 
 ### Features
-- Automates extraction, transformation, and loading of S&P 500 Alpha Vantage endpoint.
-- Provides near-real-time batch reporting into a cloud database (Supabase)
-- Outputs cleaned data for further analysis
-- Simplifies the reporting process with a single command
+- Automates the ETL Process: Extracts, transforms, and loads S&P 500 data from the Alpha Vantage API endpoint
+- Near-Real-Time Reporting: Provides batch reporting and updates into the cloud database Supabase
+- Cleaned and Transformed Data: Outputs processed data in a structured format for easy analysis.
+- Simplifies Reporting: Reduces manual data preparation by automating the entire process with a single command or scheduled run.
 
 ## Data Quality
-1. Column Name Standardisation
+**1. Column Name Standardisation**
 - Trimmed leading and trailing spaces from column names.
 - Converted all column names to lowercase to maintain consistency and avoid schema conflicts.
 
-2. Handling Missing & Invalid Data
+**2. Handling Missing & Invalid Data**
 - Used ```errors='coerce'``` while converting ipoDate to datetime, ensuring invalid dates were handled gracefully.
-- Dropped the ['delistingDate'] column if it existed, preventing unnecessary processing of outdated records and this column was filled with NaN.
+- Dropped the ['delistingDate'] column, preventing unnecessary processing of outdated records and this column was filled with NaN.
 
-3. Ensuring Data Type Consistency
- - Converted ['ipoDate'] to datetime to allow proper date filtering and analysis.
+**3. Ensuring Data Type Consistency**
+ - Converted ['ipoDate'] to pd.datetime to allow proper date filtering and analysis.
 - Converted the entire dataset to string format before inserting into Supabase to prevent type mismatches.
 
-4. Tracking Data Refreshes
-- Added a LastRun_Timestamp column to track when the data was last updated.
+**4. Tracking Data Refreshes**
+- Added a ['LastRun_Timestamp'] column to track when the data was last updated.
 - Ensured every ETL run adds a new timestamp to monitor data freshness.
 
-5. Uniqueness & Constraint Handling
+**5. Uniqueness & Constraint Handling**
 - Added a primary key (id) to uniquely identify records.
 - Created a unique constraint on (symbol, exchange) to prevent duplicate stock entries.
 - Used ```on_conflict=['symbol', 'exchange']``` in Supabase to update records when needed instead of duplicating data.
 
-6. Error Handling & Logging
+**6. Error Handling & Logging**
 - Implemented try-except blocks in all major functions to catch errors gracefully.
 - Used logging (logger.info, etc.) to track script execution and debug issues.
-7. Efficient Data Loading
+
+**7. Efficient Data Loading**
 - Converted the dataframe to a list of dictionaries for optimized batch inserts into Supabase.
- - Implemented batch inserts (2500 rows per batch) to improve performance and avoid API rate limits.
-
-
+- Implemented batch inserts (2500 rows per batch) to improve performance and avoid API rate limits.
 
 
 ## Security Reminder
@@ -132,6 +137,7 @@ You are strongly advised to run the code in a virtual environment and install al
 
 
 ## Tech Stack Used
-✅ Python (requests, pandas, yaml)  
+✅ Python (requests, pandas, yaml)
+✅ SQL (PostgreSQL for creating Supabase tables)  
 ✅ Supabase (storage & querying)   
 ✅ Apache Airflow (Optional) (for orchestration)
